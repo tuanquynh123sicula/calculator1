@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Tính Tổng Tiền Đơn ShopeeFood</title>
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlZSUKO5DtF9y0X3hXaJDKGN29ig-4wVp86RSFqhZqRA&s=10" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Light Theme */
+            --bg-gradient: linear-gradient(135deg, #f6f8fd 0%, #e9f0f9 100%);
+            --surface: rgba(255, 255, 255, 0.85);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --accent: #0ea5e9;
+            --success: #0d9488;
+            --success-bg: #f0fdfa;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --border: #e2e8f0;
+            --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --input-bg: #f1f5f9;
+            --th-bg: #f8fafc;
+            --tr-hover: #f1f5f9;
+            --date-row-bg: #e2e8f0;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Dark Theme Variables */
+        body.dark-mode {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --surface: rgba(30, 41, 59, 0.85);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            --success: #2dd4bf;
+            --success-bg: rgba(13, 148, 136, 0.15);
+            --input-bg: #0f172a;
+            --th-bg: #1e293b;
+            --tr-hover: #334155;
+            --date-row-bg: #1e293b;
+            color-scheme: dark;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes flash {
+            0% {
+                background-color: rgba(79, 70, 229, 0.2);
+            }
+
+            100% {
+                background-color: transparent;
+            }
+        }
+
+        /* Header & Nav */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-actions button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 8px;
+            transition: var(--transition);
+        }
+
+        .header-actions button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Layout */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+        }
+
+        input,
+        select {
+            margin-top: 6px;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto 24px;
+            display: block;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-hover);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-icon {
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .btn-icon:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            background: var(--th-bg);
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: var(--tr-hover);
+        }
+
+        .total {
+            font-weight: 700;
+            color: var(--success);
+            background: var(--success-bg) !important;
+            font-size: 16px;
+        }
+
+        .flash-anim {
+            animation: flash 0.8s ease-out;
+        }
+
+        .history-date-row td {
+            background: var(--date-row-bg);
+            font-weight: 700;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+        
+        #settingsModal .modal {
+            max-width: 600px; /* Cũ là 400px */
+        }
+
+        /* Trên điện thoại nhỏ, đổi từ 2 cột thành 1 cột cho dễ bấm */
+        @media (max-width: 600px) {
+            #settingsModal .form-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Toasts */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--text-main);
+            color: var(--surface);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s forwards;
+        }
+
+        /* Utilities */
+        .text-danger {
+            color: var(--danger) !important;
+        }
+
+        .text-success {
+            color: var(--success) !important;
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+            font-weight: 600;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 16px;
+                padding: 16px;
+            }
+
+            th,
+            td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-title">✨ Tính Đơn Pro</div>
+        <div class="header-actions">
+            <button onclick="openSettings()">⚙️ Cài đặt</button>
+            <button onclick="toggleTheme()" id="themeBtn">🌙 Tối</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>📝 Nhập thông tin
+            <button class="btn-icon" style="padding: 6px 12px;" onclick="clearInputs()">Làm mới</button>
+        </h2>
+        <div class="form-grid">
+            <label>Đơn ghép 4 <input id="ghep4" type="number" min="0" oninput="saveDraft()"></label>
+            <label>Đơn ghép 3 <input id="ghep3" type="number" min="0" oninput="saveDraft()"></label>
+            <label>Đơn ghép 2 <input id="ghep2" type="number" min="0" oninput="saveDraft()"></label>
+            <label>Đơn lẻ <input id="le" type="number" min="0" oninput="saveDraft()"></label>
+            <label>Số KM (Xăng) <input id="km" type="number" min="0" oninput="saveDraft()"></label>
+            <label>Tiền TIP <input id="tip" type="number" min="0" oninput="saveDraft()"></label>
+        </div>
+
+        <button class="btn btn-primary" onclick="calc()">🚀 Tính Tổng Cộng</button>
+
+        <h2>📋 Kết quả hiện tại</h2>
+        <div class="table-responsive">
+            <table id="resultTable">
+                <tbody>
+                    <tr>
+                        <th>Tổng số đơn</th>
+                        <td id="res_don">0</td>
+                    </tr>
+                    <tr>
+                        <th>Tiền đơn</th>
+                        <td id="res_tien">0 ₫</td>
+                    </tr>
+                    <tr>
+                        <th>Phí đơn con</th>
+                        <td id="res_phicon">0 ₫</td>
+                    </tr>
+                    <tr>
+                        <th>Phí thứ tự</th>
+                        <td id="res_phitt">0 ₫</td>
+                    </tr>
+                    <tr>
+                        <th>Tiền xăng</th>
+                        <td class="text-danger" id="res_xang">- 0 ₫</td>
+                    </tr>
+                    <tr>
+                        <th>Tiền TIP</th>
+                        <td class="text-success" id="res_tip">+ 0 ₫</td>
+                    </tr>
+                    <tr class="total">
+                        <th>Thực Nhận</th>
+                        <td id="res_tong">0 ₫</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 style="margin-top: 32px;">📊 Thống kê
+            <select id="monthFilter" style="width: auto; margin-top: 0;" onchange="renderStats()">
+                <option value="all">Tất cả thời gian</option>
+            </select>
+        </h2>
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Tổng số đơn</th>
+                        <td id="stt_don" class="text-primary">0</td>
+                    </tr>
+                    <tr>
+                        <th>Tổng doanh thu</th>
+                        <td id="stt_tien" class="text-success" style="font-weight: 700;">0 ₫</td>
+                    </tr>
+                    <tr>
+                        <th>Tổng chi xăng</th>
+                        <td id="stt_xang" class="text-danger">0 ₫</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 style="margin-top: 32px;">
+            <div class="flex-between" style="width: 100%;">
+                <span>🕘 Lịch sử tính</span>
+                <div>
+                    <button class="btn-icon" style="padding: 6px 12px; margin-right: 4px;" onclick="exportCSV()">📥 File
+                        CSV</button>
+                    <button class="btn-icon" style="padding: 6px 12px; background: var(--danger); color: white;"
+                        onclick="askClearAll()">🗑️ Xóa hết</button>
+                </div>
+            </div>
+        </h2>
+        <div class="table-responsive">
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Giờ</th>
+                        <th>Đơn</th>
+                        <th>Xăng</th>
+                        <th>Tổng</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="confirmTitle" style="margin-bottom: 10px;">Xác nhận</h3>
+            <p id="confirmDesc" style="color: var(--text-muted); font-size: 14px;">Bạn có chắc chắn thực hiện hành động
+                này?</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal('confirmModal')">Hủy</button>
+                <button class="btn btn-danger" id="confirmBtn">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal" style="max-height: 90vh; overflow-y: auto;">
+            <h3 style="margin-bottom: 16px;">⚙️ Cài đặt Bảng giá</h3>
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                <label>Ghép 4 <input id="cfg_ghep4" type="number"></label>
+                <label>Ghép 3 <input id="cfg_ghep3" type="number"></label>
+                <label>Ghép 2 <input id="cfg_ghep2" type="number"></label>
+                <label>Đơn lẻ <input id="cfg_le" type="number"></label>
+                <label>Phí ĐC (9-13) <input id="cfg_phi1" type="number"></label>
+                <label>Phí ĐC (>=14) <input id="cfg_phi2" type="number"></label>
+                <label>Phí TT (<=24) <input id="cfg_tt1" type="number"></label>
+                <label>Phí TT (>=25) <input id="cfg_tt2" type="number"></label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="resetSettings()">Mặc định</button>
+                <button class="btn btn-primary" style="margin: 0;" onclick="saveSettings()">Lưu cài đặt</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // --- CẤU HÌNH & TRẠNG THÁI ---
+        const KEY_DATA = "APP_HISTORY";
+        const KEY_DRAFT = "APP_DRAFT";
+        const KEY_THEME = "APP_THEME";
+        const KEY_CONFIG = "APP_CONFIG";
+
+        const DEFAULT_CONFIG = {
+            ghep4: 40100, ghep3: 30300, ghep2: 19500, le: 13500,
+            phi1: 1000, phi2: 3000, tt1: 4000, tt2: 6000
+        };
+        let CONFIG = { ...DEFAULT_CONFIG };
+
+        const fmt = n => n.toLocaleString("vi-VN") + " ₫";
+        let confirmAction = null;
+
+        // --- KHỞI TẠO (INIT) ---
+        function init() {
+            // Nạp Theme
+            if (localStorage.getItem(KEY_THEME) === 'dark') toggleTheme(true);
+
+            // Nạp Config
+            const savedCfg = localStorage.getItem(KEY_CONFIG);
+            if (savedCfg) CONFIG = { ...DEFAULT_CONFIG, ...JSON.parse(savedCfg) };
+
+            // Nạp nháp (Auto-save)
+            const draft = JSON.parse(localStorage.getItem(KEY_DRAFT) || "{}");
+            ['ghep4', 'ghep3', 'ghep2', 'le', 'km', 'tip'].forEach(id => {
+                document.getElementById(id).value = draft[id] || "";
+            });
+
+            updateMonthFilter();
+            renderHistory();
+            renderStats();
+
+            // Nhấn Enter để tính
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('keypress', e => { if (e.key === 'Enter') calc(); });
+            });
+        }
+
+        // --- LOGIC TÍNH TOÁN ---
+        function calc() {
+            const getVal = id => +document.getElementById(id).value || 0;
+            const g4 = getVal("ghep4"), g3 = getVal("ghep3"), g2 = getVal("ghep2");
+            const leDon = getVal("le"), km = getVal("km"), tip = getVal("tip");
+
+            const tienDon = g4 * CONFIG.ghep4 + g3 * CONFIG.ghep3 + g2 * CONFIG.ghep2 + leDon * CONFIG.le;
+            const donCon = g4 * 4 + g3 * 3 + g2 * 2;
+            const tongDon = donCon + leDon;
+
+            let phiDonCon = 0;
+            for (let i = 1; i <= donCon; i++) {
+                if (i >= 9 && i <= 13) phiDonCon += CONFIG.phi1;
+                else if (i >= 14) phiDonCon += CONFIG.phi2;
+            }
+
+            let phiThuTu = 0;
+            for (let i = 14; i <= tongDon; i++) {
+                phiThuTu += i <= 24 ? CONFIG.tt1 : CONFIG.tt2;
+            }
+
+            const tienXang = Math.round(((km * 10) / 31) * 1000);
+            const tongCong = tienDon + phiDonCon + phiThuTu + tip - tienXang;
+
+            // Hiển thị kết quả
+            document.getElementById("res_don").innerText = tongDon;
+            document.getElementById("res_tien").innerText = fmt(tienDon);
+            document.getElementById("res_phicon").innerText = fmt(phiDonCon);
+            document.getElementById("res_phitt").innerText = fmt(phiThuTu);
+            document.getElementById("res_xang").innerText = "- " + fmt(tienXang);
+            document.getElementById("res_tip").innerText = "+ " + fmt(tip);
+            document.getElementById("res_tong").innerText = fmt(tongCong);
+
+            // Chớp sáng bảng
+            const table = document.getElementById("resultTable");
+            table.classList.remove("flash-anim");
+            void table.offsetWidth;
+            table.classList.add("flash-anim");
+
+            // Lưu lịch sử
+            const now = new Date();
+            const monthKey = `${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()}`;
+            saveHistory({
+                id: Date.now(), // ID Duy nhất để xóa
+                time: now.toLocaleString("vi-VN"),
+                dateKey: now.toLocaleDateString("vi-VN"),
+                monthKey: monthKey,
+                don: tongDon, xang: tienXang, tong: tongCong
+            });
+            showToast("Đã lưu kết quả!");
+
+            // Tự reset input sau khi tính (Tuỳ chọn)
+            // clearInputs();
+        }
+
+        // --- QUẢN LÝ DỮ LIỆU ---
+        function getHistory() { return JSON.parse(localStorage.getItem(KEY_DATA) || "[]"); }
+
+        function saveHistory(data) {
+            const h = getHistory();
+            h.unshift(data);
+            localStorage.setItem(KEY_DATA, JSON.stringify(h));
+            updateMonthFilter();
+            renderHistory();
+            renderStats();
+        }
+
+        function saveDraft() {
+            const draft = {};
+            ['ghep4', 'ghep3', 'ghep2', 'le', 'km', 'tip'].forEach(id => {
+                draft[id] = document.getElementById(id).value;
+            });
+            localStorage.setItem(KEY_DRAFT, JSON.stringify(draft));
+        }
+
+        function clearInputs() {
+            ['ghep4', 'ghep3', 'ghep2', 'le', 'km', 'tip'].forEach(id => { document.getElementById(id).value = ""; });
+            saveDraft();
+        }
+
+        // --- RENDER GIAO DIỆN ---
+        function renderHistory() {
+            const tbody = document.querySelector("#historyTable tbody");
+            const history = getHistory();
+            tbody.innerHTML = history.length ? "" : `<tr><td colspan="5" style="text-align:center;">Chưa có dữ liệu</td></tr>`;
+
+            let currentDate = "";
+            history.forEach(h => {
+                if (h.dateKey !== currentDate) {
+                    currentDate = h.dateKey;
+                    tbody.innerHTML += `<tr class="history-date-row"><td colspan="5">📅 ${currentDate}</td></tr>`;
+                }
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-size: 12px;">${h.time.split(' ')[0]}</td>
+                        <td style="font-weight: 600;">${h.don}</td>
+                        <td class="text-danger">-${fmt(h.xang)}</td>
+                        <td class="text-success text-primary">${fmt(h.tong)}</td>
+                        <td><button class="btn-icon" onclick="askDeleteRow(${h.id})">🗑️</button></td>
+                    </tr>`;
+            });
+        }
+
+        function updateMonthFilter() {
+            const history = getHistory();
+            const select = document.getElementById("monthFilter");
+            const currentVal = select.value;
+
+            const months = [...new Set(history.map(h => h.monthKey))];
+            let html = `<option value="all">Tất cả</option>`;
+            months.forEach(m => { html += `<option value="${m}">Tháng ${m}</option>`; });
+
+            select.innerHTML = html;
+            if (months.includes(currentVal)) select.value = currentVal;
+        }
+
+        function renderStats() {
+            const filter = document.getElementById("monthFilter").value;
+            let data = getHistory();
+            if (filter !== "all") data = data.filter(h => h.monthKey === filter);
+
+            document.getElementById("stt_don").innerText = data.reduce((s, i) => s + i.don, 0);
+            document.getElementById("stt_xang").innerText = fmt(data.reduce((s, i) => s + i.xang, 0));
+            document.getElementById("stt_tien").innerText = fmt(data.reduce((s, i) => s + i.tong, 0));
+        }
+
+        // --- XÓA & CONFIRM CUSTOM ---
+        function showConfirm(title, desc, action) {
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmDesc').innerText = desc;
+            confirmAction = action;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        document.getElementById('confirmBtn').onclick = () => {
+            if (confirmAction) confirmAction();
+            closeModal('confirmModal');
+        };
+
+        function askDeleteRow(id) {
+            showConfirm("Xóa dòng này?", "Dữ liệu sẽ bị xóa vĩnh viễn.", () => {
+                const h = getHistory().filter(item => item.id !== id);
+                localStorage.setItem(KEY_DATA, JSON.stringify(h));
+                renderHistory(); renderStats(); showToast("Đã xóa dòng!");
+            });
+        }
+
+        function askClearAll() {
+            const h = getHistory();
+            if (h.length === 0) return showToast("Không có gì để xóa!");
+            showConfirm("Xóa tất cả?", "Bạn sẽ mất toàn bộ lịch sử.", () => {
+                localStorage.removeItem(KEY_DATA);
+                updateMonthFilter(); renderHistory(); renderStats(); showToast("Đã xóa sạch!");
+            });
+        }
+
+        // --- XUẤT CSV ---
+        function exportCSV() {
+            const h = getHistory();
+            if (!h.length) return showToast("Không có dữ liệu để tải!");
+            let csv = "Thoi gian,So don,Tien xang,Thuc nhan\n";
+            h.forEach(row => { csv += `"${row.time}","${row.don}","${row.xang}","${row.tong}"\n`; });
+
+            const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" }); // utf-8 bom for excel
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `ThongKeDon_${new Date().toLocaleDateString("vi-VN").replace(/\//g, '-')}.csv`;
+            link.click();
+            showToast("Đã tải xuống file CSV!");
+        }
+
+        // --- CÀI ĐẶT ---
+        function openSettings() {
+            Object.keys(CONFIG).forEach(k => {
+                const el = document.getElementById(`cfg_${k}`);
+                if (el) el.value = CONFIG[k];
+            });
+            document.getElementById('settingsModal').classList.add('active');
+        }
+        function saveSettings() {
+            Object.keys(CONFIG).forEach(k => {
+                const el = document.getElementById(`cfg_${k}`);
+                if (el) CONFIG[k] = +el.value || 0;
+            });
+            localStorage.setItem(KEY_CONFIG, JSON.stringify(CONFIG));
+            closeModal('settingsModal');
+            showToast("Đã lưu bảng giá mới!");
+        }
+        function resetSettings() {
+            CONFIG = { ...DEFAULT_CONFIG };
+            openSettings();
+        }
+
+        // --- TIỆN ÍCH KHÁC ---
+        function toggleTheme(forceDark) {
+                // Sửa lỗi nhận diện sai Event của trình duyệt
+                let isDark;
+                if (forceDark === true || forceDark === false) {
+                    isDark = forceDark;
+                } else {
+                    isDark = !document.body.classList.contains('dark-mode');
+                }
+
+                if (isDark) {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('themeBtn').innerText = '☀️ Sáng';
+                    localStorage.setItem(KEY_THEME, 'dark');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    document.getElementById('themeBtn').innerText = '🌙 Tối';
+                    localStorage.setItem(KEY_THEME, 'light');
+                }
+            }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = msg;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 2500);
+        }
+
+        // Chạy Init khi tải trang
+        window.onload = init;
+    </script>
+</body>
+
+</html>
